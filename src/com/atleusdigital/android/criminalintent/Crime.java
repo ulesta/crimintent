@@ -8,7 +8,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 
 public class Crime {
-	
+	// random test for git
 	private UUID mId;
 	private String mTitle;
 	private Date mDate;
