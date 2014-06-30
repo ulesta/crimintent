@@ -38,6 +38,7 @@ public class CrimePagerActivity extends FragmentActivity {
 				@Override
 				public Fragment getItem(int pos) {
 					Crime crime = mCrimes.get(pos);
+					// return fragment to adapter which transacts it to the fragment manager
 					return CrimeFragment.newInstance(crime.getmId());
 				}
 			});
@@ -70,6 +71,7 @@ public class CrimePagerActivity extends FragmentActivity {
 			// loop through until the crime is found
 			for (int i = 0; i < mCrimes.size(); i++ ) {
 				if (mCrimes.get(i).getmId().equals(crimeId)) {
+					// set pager's item to the crimeID found
 					mViewPager.setCurrentItem(i);
 					Log.i(TAG, "index = " + i);
 					break;
