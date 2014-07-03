@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 public abstract class SingleFragmentActivity extends FragmentActivity {
+	
 	protected abstract Fragment createFragment();
 
 	@Override
@@ -18,6 +19,8 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
 		
 		if ( fragment == null ) {
 			fragment = createFragment();
+			/* for fragments to get arguments, fragments must be 
+				created before adding to fragmentmanager */
 			fm.beginTransaction()
 				.add(R.id.fragmentContainer, fragment)
 				.commit();
