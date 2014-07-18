@@ -65,7 +65,7 @@ public class CrimePagerActivity extends FragmentActivity {
 				}
 			});
 			
-			UUID crimeId = (UUID)getIntent().getSerializableExtra(CrimeFragment.KEY_UUID);
+			UUID crimeId = (UUID)getIntent().getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
 			Log.i(TAG, "crimeId = " + crimeId.toString());
 			
 			// loop through until the crime is found
