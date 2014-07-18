@@ -28,6 +28,7 @@ public class CrimeListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// must be called so that the fragment gets onCreateOptionMenu callback
 		setHasOptionsMenu(true);
 		getActivity().setTitle(R.string.crimes_title);
 		mCrimes = CrimeLab.get(getActivity()).getCrimes();
@@ -78,8 +79,8 @@ public class CrimeListFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		// TODO Auto-generated method stub
 		super.onCreateOptionsMenu(menu, inflater);
+		// must be called to inflate our menu in res/menu
 		inflater.inflate(R.menu.fragment_crime_list, menu);
 	}
 	
