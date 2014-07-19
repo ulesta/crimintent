@@ -16,5 +16,8 @@
     <string name="hide_subtitle">Hide Subtitle</string>
     <string name="subtitle">If you see something, say something.</string>
     <string name="delete_crime">Delete</string>
+    
+    <string name="empty_text">There are no crimes! Go ahead and add one!</string>
+    <string name="empty_button">New Crime</string>
 
 </resources>
