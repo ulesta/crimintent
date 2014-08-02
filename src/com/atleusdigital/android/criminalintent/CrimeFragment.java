@@ -49,6 +49,17 @@ public class CrimeFragment extends Fragment {
 		setHasOptionsMenu(true);
 	}
 	
+	
+	
+	@Override
+	public void onPause() {
+		// When the fragment loses focus, the CrimeLab is saved to a JSON file
+		super.onPause();
+		CrimeLab.get(getActivity()).saveCrimes();
+	}
+
+
+
 	public static CrimeFragment newInstance(UUID id) {
 		Bundle args = new Bundle();
 		args.putSerializable(EXTRA_CRIME_ID, id);
