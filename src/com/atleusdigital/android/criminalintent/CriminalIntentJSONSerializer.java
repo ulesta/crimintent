@@ -1,6 +1,9 @@
 package com.atleusdigital.android.criminalintent;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,7 +17,8 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 
 import android.content.Context;
-import android.os.Environment;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.util.Log;
 
 public class CriminalIntentJSONSerializer {
@@ -37,8 +41,20 @@ public class CriminalIntentJSONSerializer {
 		}
 		// Write file to disk
 		Writer writer = null;
+		File file = null;
 		try {
-			OutputStream out = mContext.openFileOutput(mFilename, Context.MODE_PRIVATE);
+			/* For Ch.17 Challenge:
+			 * Writing to external (non-sandboxed) directory
+			 * requires a method called getExternalFilesDir() method from Context class
+			 */
+			
+			File path = mContext.getExternalFilesDir(null);
+			file = new File(path, mFilename);
+			OutputStream out = new FileOutputStream(file);
+			
+			
+			/* openFileOutput is for internal (sandboxed) storage */
+			//OutputStream out = mContext.openFileOutput(mFilename, Context.MODE_PRIVATE);
 			writer = new OutputStreamWriter(out);
 			writer.write(array.toString());
 			Log.d(TAG+" [write]", ""+array.toString());
@@ -49,6 +65,18 @@ public class CriminalIntentJSONSerializer {
 			if (writer != null) {
 				try {
 					writer.close();
+					
+					// Tell the media scanner about the new file so that it is
+			        // immediately available to the user.
+			        MediaScannerConnection.scanFile(mContext,
+			                new String[] { file.toString() }, null,
+			                new MediaScannerConnection.OnScanCompletedListener() {
+			            public void onScanCompleted(String path, Uri uri) {
+			                Log.i("ExternalStorage", "Scanned " + path + ":");
+			                Log.i("ExternalStorage", "-> uri=" + uri);
+			            }
+			        });
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -61,7 +89,13 @@ public class CriminalIntentJSONSerializer {
 		BufferedReader reader = null;
 		try {
 			// Open and read the file into a StringBuilder
-			InputStream in = mContext.openFileInput(mFilename);
+			
+			File path = mContext.getExternalFilesDir(null);
+			File file = new File(path, mFilename);
+			InputStream in = new FileInputStream(file);
+			
+			/* openFileInput() is for opening internal (sandboxed) files */
+			//InputStream in = mContext.openFileInput(mFilename);
 			reader = new BufferedReader(new InputStreamReader(in));
 			StringBuilder jsonString = new StringBuilder();
 			String line = null;
