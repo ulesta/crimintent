@@ -19,11 +19,13 @@ import org.json.JSONTokener;
 import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 public class CriminalIntentJSONSerializer {
 	
 	private static final String TAG = "CriminalIntentJSONSerializer";
+	private static final String WORKING_DIR = "/CriminalIntent";
 
 	private Context mContext;
 	private String mFilename;
@@ -42,13 +44,29 @@ public class CriminalIntentJSONSerializer {
 		// Write file to disk
 		Writer writer = null;
 		File file = null;
+		File path = null;
 		try {
 			/* For Ch.17 Challenge:
 			 * Writing to external (non-sandboxed) directory
 			 * requires a method called getExternalFilesDir() method from Context class
 			 */
 			
-			File path = mContext.getExternalFilesDir(null);
+			// getExternalFilesDir() will place the file in sdCard0/Android/packagename
+			//File path = mContext.getExternalFilesDir(null);
+			
+			// on the other hand, we can make a new directory in the root of the external storage directory
+			// creates new directory
+			path = new File(Environment.getExternalStorageDirectory().toString() + WORKING_DIR);
+			// File.mkdirs() is the magic solution! :)
+			if (!path.exists() && !path.mkdirs()) {
+				Log.e("Debug", "ERROR --> FAILED TO CREATE DIRECTORY: "
+						+ WORKING_DIR);
+				return;
+			}
+			
+			//Log.i("JSONSerializer", "" + Environment.getExternalStorageDirectory());
+			//Log.i("JSONSerializer", "toString(): " + Environment.getExternalStorageDirectory().toString());
+			
 			file = new File(path, mFilename);
 			OutputStream out = new FileOutputStream(file);
 			
@@ -68,6 +86,7 @@ public class CriminalIntentJSONSerializer {
 					
 					// Tell the media scanner about the new file so that it is
 			        // immediately available to the user.
+					// This makes the file viewable in the files directory
 			        MediaScannerConnection.scanFile(mContext,
 			                new String[] { file.toString() }, null,
 			                new MediaScannerConnection.OnScanCompletedListener() {
@@ -90,7 +109,8 @@ public class CriminalIntentJSONSerializer {
 		try {
 			// Open and read the file into a StringBuilder
 			
-			File path = mContext.getExternalFilesDir(null);
+			//File path = mContext.getExternalFilesDir(null);
+			File path = new File(Environment.getExternalStorageDirectory().toString() + WORKING_DIR);
 			File file = new File(path, mFilename);
 			InputStream in = new FileInputStream(file);
 			
