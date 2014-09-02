@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,6 +83,14 @@ public class CrimeListFragment extends ListFragment {
 			}
 		});
 		
+		/* We must first register the view to trigger a context menu.
+		 * The android.R.id.list res ID is used to retrieve the ListView managed by ListFragment
+		 * with onCreateView(..).  */
+		
+		ListView listView = (ListView) v.findViewById(android.R.id.list);
+		registerForContextMenu(listView);
+		
+		
 		return v;
 	}
 
@@ -123,7 +133,7 @@ public class CrimeListFragment extends ListFragment {
 	}
 	
 	
-
+	
 
 
 	@Override
@@ -137,6 +147,9 @@ public class CrimeListFragment extends ListFragment {
 		}
 	}
 	
+	
+
+
 	@TargetApi(11)
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -165,9 +178,20 @@ public class CrimeListFragment extends ListFragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-
-
+	
+	/* For floating context menu */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		/* Unlike onCreateOptionsMenue(...), this menu callback does not pass in an
+		 * instance of MenuInflater.
+		 * MenuInflater.inflate(...) allows you to pass in the resource ID of our context menu
+		 * to populate the menu instance with the items given in our file.
+		 * Note: currently we only have one context menu, were to we have more, we can determine
+		 * which to inflate by checking the ID of the View
+		 */
+		getActivity().getMenuInflater().inflate(R.menu.crime_list_item_context, menu);
+	}
 
 
 	private class CrimeAdapter extends ArrayAdapter<Crime> {
