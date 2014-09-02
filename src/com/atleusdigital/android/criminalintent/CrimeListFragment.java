@@ -11,6 +11,7 @@ import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -89,8 +91,63 @@ public class CrimeListFragment extends ListFragment {
 		 * with onCreateView(..).  */
 		
 		ListView listView = (ListView) v.findViewById(android.R.id.list);
-		registerForContextMenu(listView);
 		
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			// Use floating context menus on Froyo and Gingerbread
+			registerForContextMenu(listView);
+		} else {
+			// Use contextual action bar on Honeycomb and higher
+			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		}
+		
+		listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+			
+			public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
+				/* called after onCreateActionMode(..) and whenever contextual action bar
+				 * needs to be refreshed
+				 */
+				// required but not used in this implementation
+				return false;
+			}
+			
+			public void onDestroyActionMode(ActionMode arg0) {
+				/* called when the ActionMode is about to be destroyed */
+				// required but not used
+			}
+			
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				/* This is where you inflate the context menue resource */
+				MenuInflater inflater = mode.getMenuInflater();
+				inflater.inflate(R.menu.crime_list_item_context, menu);
+				return true;
+			}
+			
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+				/* called when the user selects an action, where response to contextual actions is done */
+				switch (item.getItemId()) {
+				case R.id.menu_item_delete_crime:
+					CrimeAdapter adapter = (CrimeAdapter) getListAdapter();
+					CrimeLab crimeLab = CrimeLab.get(getActivity());
+					for ( int i = adapter.getCount() - 1 ; i >= 0; i-- ) {
+						if (getListView().isItemChecked(i)) {
+							crimeLab.deleteCrime(adapter.getItem(i));
+						}	
+					}
+					mode.finish();
+					adapter.notifyDataSetChanged();
+					return true;
+				default:
+					return false;
+				}
+
+			}
+			
+			public void onItemCheckedStateChanged(ActionMode mode, int position,
+					long id, boolean checked) {
+				// Required but not used in this implementation
+				
+			}
+		});
 		
 		return v;
 	}
