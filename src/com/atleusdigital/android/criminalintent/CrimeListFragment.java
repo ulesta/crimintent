@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -192,6 +193,28 @@ public class CrimeListFragment extends ListFragment {
 		 */
 		getActivity().getMenuInflater().inflate(R.menu.crime_list_item_context, menu);
 	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		/* because ListView is a subclass of AdapterView we must obtain AdapterContextMenuInfo */
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		int position = info.position;
+		CrimeAdapter adapter = (CrimeAdapter) getListAdapter();
+		Crime crime = adapter.getItem(position);
+		
+		switch (item.getItemId()) {
+		case R.id.menu_item_delete_crime:
+			CrimeLab.get(getActivity()).deleteCrime(crime);
+			// needed to refresh list
+			adapter.notifyDataSetChanged();
+			return true;
+
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+
+
 
 
 	private class CrimeAdapter extends ArrayAdapter<Crime> {
