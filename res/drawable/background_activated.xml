@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item 
+        android:state_activated="true"
+        android:drawable="@android:color/darker_gray"
+        />
+</selector>
+
+<!-- “This XML says, “When the view that references this drawable is in the activated state, use the value of android:drawable. Otherwise, do nothing.” If you had given android:state_activated a value of false, then the value would be used whenever the view was not in the activated state.”
+
+Excerpt From: Brian Hardy. “Android Programming: The Big Nerd Ranch Guide.” iBooks.  -->
