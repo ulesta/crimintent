@@ -19,5 +19,7 @@
     
     <string name="empty_text">There are no crimes! Go ahead and add one!</string>
     <string name="empty_button">New Crime</string>
+    
+    <string name="take">Take!</string>
 
 </resources>

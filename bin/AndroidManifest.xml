@@ -8,6 +8,11 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
     
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- adding this line ensures that when the app is released onto Google Play, then it will
+    only be offered to devices that have a camera -->
+    <uses-feature android:name="android.hardware.camera"/>
+    
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	
@@ -30,6 +35,7 @@
             android:name="com.atleusdigital.android.criminalintent.CrimeActivity"
             android:label="@string/app_name" >
         </activity>
+        
         <activity
             android:name=".CrimePagerActivity"
             android:label="@string/app_name">
@@ -44,6 +50,13 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CrimeListActivity"/>
         </activity>
+        
+        <activity
+            android:name=".CrimeCameraActivity"
+            android:screenOrientation="landscape"
+            android:label="@string/app_name" >
+        </activity>
+        
     </application>
 
 </manifest>
