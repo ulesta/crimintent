@@ -1,5 +1,7 @@
 package com.atleusdigital.android.criminalintent;
 
+import java.util.List;
+
 import android.annotation.TargetApi;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
@@ -91,7 +93,7 @@ public class CrimeCameraFragment extends Fragment {
 					
 					// The surface has changed size; update the camera preview size
 					Camera.Parameters parameters = mCamera.getParameters();
-					Size s = null; // To be reset in the next section
+					Size s = getBestSupportedSize(parameters.getSupportedPreviewSizes(), w, h);
 					parameters.setPreviewSize(s.width, s.height);
 					mCamera.setParameters(parameters);
 					
@@ -140,6 +142,22 @@ public class CrimeCameraFragment extends Fragment {
 				mCamera = null;
 			}
 			
+		}
+		
+		/** A simple algorithm to get the largest size available. For a more
+		 * robust version, see CameraPreview.java in the ApiDemos
+		 * sample app from Android. */
+		private Size getBestSupportedSize(List<Size> sizes, int width, int height) {
+			Size bestSize = sizes.get(0);
+			int largestArea = bestSize.width * bestSize.height;
+			for ( Size s: sizes ) {
+				int area = s.width * s.height;
+				if ( area > largestArea ) {
+					bestSize = s;
+					largestArea = area;
+				}
+			}
+			return bestSize;
 		}
 
 }
