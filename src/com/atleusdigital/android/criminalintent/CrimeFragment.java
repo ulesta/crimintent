@@ -4,10 +4,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 public class CrimeFragment extends Fragment {
 	
@@ -42,6 +42,8 @@ public class CrimeFragment extends Fragment {
 	private EditText mTitleField;
 	private Button mDateButton;
 	private CheckBox mSolvedCheckBox;
+	
+	private ImageButton mPhotoButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,7 @@ public class CrimeFragment extends Fragment {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				mCrime.setTitle(s.toString());
+				// [bug]: when orientation is changed -- nullpointer
 				returnResult();
 			}
 			
@@ -171,7 +174,22 @@ public class CrimeFragment extends Fragment {
 			
 		});
 		
+		mPhotoButton = (ImageButton)v.findViewById(R.id.crime_imageButton);
+		mPhotoButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(), CrimeCameraActivity.class);
+				startActivity(i);
+			}
+			
+		});
 		
+		// If camera is not available, disable camera functionality
+		PackageManager pm = getActivity().getPackageManager();
+		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && !pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
+			mPhotoButton.setEnabled(false);
+		}
 		
 		return v;
 	}
