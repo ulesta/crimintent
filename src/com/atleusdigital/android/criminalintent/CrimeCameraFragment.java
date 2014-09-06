@@ -32,6 +32,7 @@ public class CrimeCameraFragment extends Fragment {
 		
 		private Camera mCamera;
 		private SurfaceView mSurfaceView;
+		private View mProgressContainer;
 		
 		@Override
 		@SuppressWarnings("deprecation")
@@ -49,6 +50,9 @@ public class CrimeCameraFragment extends Fragment {
 					getActivity().finish();
 				}
 			});
+			
+			mProgressContainer = v.findViewById(R.id.crime_camera_progressContainer);
+			mProgressContainer.setVisibility(View.INVISIBLE);
 			
 			mSurfaceView = (SurfaceView) v.findViewById(R.id.crime_camera_surfaceView);
 			
