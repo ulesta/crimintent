@@ -12,13 +12,14 @@ public class Crime {
 	private static final String JSON_TITLE = "title";
 	private static final String JSON_SOVLED = "solved";
 	private static final String JSON_DATE = "date";
-	
+	private static final String JSON_PHOTO = "photo";
 	
 	// random test for git
 	private UUID mId;
 	private String mTitle;
 	private Date mDate;
 	private boolean mSolved;
+	private Photo mPhoto;
 	
 	private final String daysOfWeek[] = {
 			
@@ -70,6 +71,9 @@ public class Crime {
 		json.put(JSON_TITLE, mTitle);
 		json.put(JSON_SOVLED, mSolved);
 		json.put(JSON_DATE, mDate.getTime());
+		if (mPhoto != null) {
+			json.put(JSON_PHOTO, mPhoto.toJSON());
+		}
 		return json;
 	}
 	
@@ -78,6 +82,17 @@ public class Crime {
 		mTitle = json.getString(JSON_TITLE);
 		mSolved = json.getBoolean(JSON_SOVLED);
 		mDate = new Date(json.getLong(JSON_DATE));
+		if (json.has(JSON_PHOTO)) {
+			mPhoto = new Photo(json.getJSONObject(JSON_PHOTO));
+		}
+	}
+	
+	public Photo getPhoto() {
+		return mPhoto;
+	}
+	
+	public void setPhoto(Photo p) {
+		mPhoto = p;
 	}
 	
 }
