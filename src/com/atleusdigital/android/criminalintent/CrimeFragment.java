@@ -32,11 +32,13 @@ import android.widget.ImageButton;
 
 public class CrimeFragment extends Fragment {
 	
-	private final static String TAG = "CrimeFragment.java";
+	private final static String TAG = "CrimeFragment";
 	public static final String EXTRA_CRIME_ID = "extraCrimeID";
 	public static final String KEY_UUID = "crime_key";
 	private static final String DIALOG_DATE = "date";
+	
 	private static final int REQUEST_DATE = 0;
+	private static final int REQUEST_PHOTO = 1;
 	
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -180,7 +182,7 @@ public class CrimeFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), CrimeCameraActivity.class);
-				startActivity(i);
+				startActivityForResult(i, REQUEST_PHOTO);
 			}
 			
 		});
@@ -213,6 +215,12 @@ public class CrimeFragment extends Fragment {
 					DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
 			updateDate();
+		} else if (requestCode == REQUEST_PHOTO) {
+			// Create a new Photo object and attach it to the crime
+			String filename = data.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
+			if (filename != null) {
+				Log.i(TAG, "filename: " + filename);
+			}
 		}
 	}	
 	
