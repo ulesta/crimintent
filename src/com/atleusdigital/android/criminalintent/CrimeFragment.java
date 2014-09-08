@@ -39,6 +39,8 @@ public class CrimeFragment extends Fragment {
 	public static final String KEY_UUID = "crime_key";
 	private static final String DIALOG_DATE = "date";
 	
+	private static final String DIALOG_IMAGE = "image";
+	
 	private static final int REQUEST_DATE = 0;
 	private static final int REQUEST_PHOTO = 1;
 	
@@ -196,6 +198,23 @@ public class CrimeFragment extends Fragment {
 		}
 		
 		mPhotoView = (ImageView) v.findViewById(R.id.crime_imageView);
+		mPhotoView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Photo p = mCrime.getPhoto();
+				if (p == null) {
+					return;
+				}
+				
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				String path = getActivity().getFileStreamPath(p.getFilename()).getAbsolutePath();
+				
+				/* show is a convenience that displays the dialog and adds it to the FragmentManager */
+				ImageFragment.newInstance(path)
+								.show(fm, DIALOG_IMAGE);
+			}
+		});
 		
 		return v;
 	}
