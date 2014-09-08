@@ -8,6 +8,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -226,12 +227,34 @@ public class CrimeFragment extends Fragment {
 				
 				Photo p = new Photo(filename);
 				mCrime.setPhoto(p);
-				Log.i(TAG, "Crime: " + mCrime.getTitle() + " has a photo");
+				//Log.i(TAG, "Crime: " + mCrime.getTitle() + " has a photo");
+				showPhoto();
 			}
 		}
 	}	
 	
+	/** method which sets the ImageView thumbnail as the image in our Crime */
+	private void showPhoto() {
+		// (Re)set the image button's image based on our photo
+		Photo p = mCrime.getPhoto();
+		BitmapDrawable b = null;
+		if (p != null) {
+			String path = getActivity().getFileStreamPath(p.getFilename()).getAbsolutePath();
+			b = PictureUtils.getScaledDrawable(getActivity(), path);
+		}
+		mPhotoView.setImageDrawable(b);
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		showPhoto();
+	}
 	
-	
+	@Override
+	public void onStop() {
+		super.onStop();
+		PictureUtils.cleanImageView(mPhotoView);
+	}
 
 }
