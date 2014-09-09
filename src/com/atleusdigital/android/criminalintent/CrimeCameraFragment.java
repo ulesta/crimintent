@@ -9,18 +9,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.hardware.SensorEventListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 /* Notes:
  * 
@@ -37,6 +42,7 @@ public class CrimeCameraFragment extends Fragment {
 		private static final String TAG = "CrimeCameraFragment";
 		
 		public static final String EXTRA_PHOTO_FILENAME = "com.atleusdigital.android.criminalintent.photo_filename";
+		public static final String EXTRA_PHOTO_ORIENTATION = "com.atleusdigital.android.criminalintent.photo_orientation";
 		
 		private Camera mCamera;
 		private SurfaceView mSurfaceView;
@@ -45,8 +51,15 @@ public class CrimeCameraFragment extends Fragment {
 		private Camera.ShutterCallback mShutterCallback;
 		
 		private Camera.PictureCallback mJpegCallback;
+
+		private OrientationEventListener mOrientationEventListener;
 		
-		
+		private static final int ORIENTATION_PORTRAIT_NORMAL =  1;
+		private static final int ORIENTATION_PORTRAIT_INVERTED =  2;
+		private static final int ORIENTATION_LANDSCAPE_NORMAL =  3;
+		private static final int ORIENTATION_LANDSCAPE_INVERTED =  4;
+
+		private int mOrientation = 0;
 		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
@@ -55,12 +68,51 @@ public class CrimeCameraFragment extends Fragment {
 			 * Callbacks in here
 			 */
 			
+			if (mOrientationEventListener == null) {            
+		        mOrientationEventListener = new OrientationEventListener(getActivity(), SensorManager.SENSOR_DELAY_UI) {
+
+		            @Override
+		            public void onOrientationChanged(int orientation) {
+		            	// determine our orientation based on sensor response
+		                int lastOrientation = mOrientation;
+
+		                if (orientation >= 315 || orientation < 45) {
+		                    if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {                          
+		                        mOrientation = ORIENTATION_PORTRAIT_NORMAL;
+		                    }
+		                }
+		                else if (orientation < 315 && orientation >= 225) {
+		                    if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
+		                        mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
+		                    }                       
+		                }
+		                else if (orientation < 225 && orientation >= 135) {
+		                    if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
+		                        mOrientation = ORIENTATION_PORTRAIT_INVERTED;
+		                    }                       
+		                }
+		                else { // orientation <135 && orientation > 45
+		                    if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
+		                        mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
+		                    }                       
+		                }   
+
+		                Log.i(TAG, "Orientation change: " + orientation + " val=" + mOrientation);
+		            }
+		    };
+		    if (mOrientationEventListener.canDetectOrientation()) {
+		        mOrientationEventListener.enable();
+		    }
+		 }
+			
+			
 			mShutterCallback = new Camera.ShutterCallback() {
 				
 				@Override
 				public void onShutter() {
 					// Display the progress indicator
 					mProgressContainer.setVisibility(View.VISIBLE);
+					Log.i(TAG, "Orientation: " + getActivity().getResources().getConfiguration().orientation);
 				}
 			};
 			
@@ -95,6 +147,7 @@ public class CrimeCameraFragment extends Fragment {
 						// Set the photo filename on the result intent
 						Intent i = new Intent();
 						i.putExtra(EXTRA_PHOTO_FILENAME, filename);
+						i.putExtra(EXTRA_PHOTO_ORIENTATION, mOrientation);
 						// allows data to propagate back to originating activity
 						getActivity().setResult(Activity.RESULT_OK, i);
 					} else {
@@ -119,7 +172,7 @@ public class CrimeCameraFragment extends Fragment {
 			
 			
 			
-			Button takePictureButton = (Button) v.findViewById(R.id.crime_camera_takePictureButton);
+			ImageButton takePictureButton = (ImageButton) v.findViewById(R.id.crime_camera_takePictureButton);
 			takePictureButton.setOnClickListener(new View.OnClickListener() {
 				
 				@Override

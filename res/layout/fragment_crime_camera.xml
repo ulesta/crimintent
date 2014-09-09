@@ -15,11 +15,15 @@
             android:layout_height="match_parent"
             />
         
-        <Button 
+        <ImageButton 
             android:id="@+id/crime_camera_takePictureButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/take"
+            android:contentDescription="@string/take"
+            android:src="@android:drawable/ic_menu_camera"
+            android:background="@android:color/background_dark"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
             />
         
     </LinearLayout>

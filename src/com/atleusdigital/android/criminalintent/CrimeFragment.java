@@ -211,7 +211,7 @@ public class CrimeFragment extends Fragment {
 				String path = getActivity().getFileStreamPath(p.getFilename()).getAbsolutePath();
 				
 				/* show is a convenience that displays the dialog and adds it to the FragmentManager */
-				ImageFragment.newInstance(path)
+				ImageFragment.newInstance(path, p.getOrientation())
 								.show(fm, DIALOG_IMAGE);
 			}
 		});
@@ -241,10 +241,11 @@ public class CrimeFragment extends Fragment {
 		} else if (requestCode == REQUEST_PHOTO) {
 			// Create a new Photo object and attach it to the crime
 			String filename = data.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
+			int orientation = data.getIntExtra(CrimeCameraFragment.EXTRA_PHOTO_ORIENTATION, 1);
 			if (filename != null) {
 				//Log.i(TAG, "filename: " + filename);
 				
-				Photo p = new Photo(filename);
+				Photo p = new Photo(filename, orientation);
 				mCrime.setPhoto(p);
 				//Log.i(TAG, "Crime: " + mCrime.getTitle() + " has a photo");
 				showPhoto();
@@ -259,7 +260,7 @@ public class CrimeFragment extends Fragment {
 		BitmapDrawable b = null;
 		if (p != null) {
 			String path = getActivity().getFileStreamPath(p.getFilename()).getAbsolutePath();
-			b = PictureUtils.getScaledDrawable(getActivity(), path);
+			b = PictureUtils.getScaledDrawable(getActivity(), path, p.getOrientation());
 		}
 		mPhotoView.setImageDrawable(b);
 	}

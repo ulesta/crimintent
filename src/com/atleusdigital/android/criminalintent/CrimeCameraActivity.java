@@ -1,11 +1,20 @@
 package com.atleusdigital.android.criminalintent;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.OrientationEventListener;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class CrimeCameraActivity extends SingleFragmentActivity {
+	
+	private final String TAG = "CrimeCameraActivity";
+	private OrientationEventListener mOrientationEventListener;
 
 	@Override
 	protected Fragment createFragment() {
@@ -22,7 +31,12 @@ public class CrimeCameraActivity extends SingleFragmentActivity {
 		
 		super.onCreate(savedInstanceState);
 	}
-	
-	
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();	
+	}
+	
+	
 }
