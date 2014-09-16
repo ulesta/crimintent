@@ -52,14 +52,6 @@ public class CrimeCameraFragment extends Fragment {
 		
 		private Camera.PictureCallback mJpegCallback;
 
-		private OrientationEventListener mOrientationEventListener;
-		
-		private static final int ORIENTATION_PORTRAIT_NORMAL =  1;
-		private static final int ORIENTATION_PORTRAIT_INVERTED =  2;
-		private static final int ORIENTATION_LANDSCAPE_NORMAL =  3;
-		private static final int ORIENTATION_LANDSCAPE_INVERTED =  4;
-
-		private int mOrientation = 0;
 		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
@@ -67,43 +59,6 @@ public class CrimeCameraFragment extends Fragment {
 			/* I feel like it'd be cleaner if we instaniated the Camera 
 			 * Callbacks in here
 			 */
-			
-			if (mOrientationEventListener == null) {            
-		        mOrientationEventListener = new OrientationEventListener(getActivity(), SensorManager.SENSOR_DELAY_UI) {
-
-		            @Override
-		            public void onOrientationChanged(int orientation) {
-		            	// determine our orientation based on sensor response
-		                int lastOrientation = mOrientation;
-
-		                if (orientation >= 315 || orientation < 45) {
-		                    if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {                          
-		                        mOrientation = ORIENTATION_PORTRAIT_NORMAL;
-		                    }
-		                }
-		                else if (orientation < 315 && orientation >= 225) {
-		                    if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
-		                        mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
-		                    }                       
-		                }
-		                else if (orientation < 225 && orientation >= 135) {
-		                    if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
-		                        mOrientation = ORIENTATION_PORTRAIT_INVERTED;
-		                    }                       
-		                }
-		                else { // orientation <135 && orientation > 45
-		                    if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
-		                        mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
-		                    }                       
-		                }   
-
-		                Log.i(TAG, "Orientation change: " + orientation + " val=" + mOrientation);
-		            }
-		    };
-		    if (mOrientationEventListener.canDetectOrientation()) {
-		        mOrientationEventListener.enable();
-		    }
-		 }
 			
 			
 			mShutterCallback = new Camera.ShutterCallback() {
@@ -147,7 +102,7 @@ public class CrimeCameraFragment extends Fragment {
 						// Set the photo filename on the result intent
 						Intent i = new Intent();
 						i.putExtra(EXTRA_PHOTO_FILENAME, filename);
-						i.putExtra(EXTRA_PHOTO_ORIENTATION, mOrientation);
+						i.putExtra(EXTRA_PHOTO_ORIENTATION, ((CrimeCameraActivity)getActivity()).getOrientation());
 						// allows data to propagate back to originating activity
 						getActivity().setResult(Activity.RESULT_OK, i);
 					} else {
@@ -159,9 +114,6 @@ public class CrimeCameraFragment extends Fragment {
 			};
 
 		}
-		
-		
-		
 
 		@Override
 		@SuppressWarnings("deprecation")

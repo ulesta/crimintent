@@ -1,5 +1,6 @@
 package com.atleusdigital.android.criminalintent;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -17,12 +18,17 @@ import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.ActionMode.Callback;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -198,6 +204,66 @@ public class CrimeFragment extends Fragment {
 		}
 		
 		mPhotoView = (ImageView) v.findViewById(R.id.crime_imageView);
+		
+		// [Challenge ch20 - 3]: implement context menu on hold of imageview
+		// Reference: http://www.technotalkative.com/contextual-action-bar-cab-android/
+		mPhotoView.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				
+				Log.i(TAG, "onLongClick event!");
+				
+				getActivity().startActionMode(new Callback() {
+					
+					@Override
+					public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+						return false;
+					}
+					
+					@Override
+					public void onDestroyActionMode(ActionMode mode) {
+						
+					}
+					
+					@Override
+					public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+						/* This is where we inflate context menu resource */
+						MenuInflater inflater = mode.getMenuInflater();
+						inflater.inflate(R.menu.crime_fragment_context, menu);
+						// you have to return true to see the action context menu
+						return true;
+					}
+					
+					@Override
+					public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+						switch (item.getItemId()) {
+						case R.id.menu_item_delete_photo:
+							PictureUtils.cleanImageView(mPhotoView);
+							File in;
+							try {
+								in = getActivity().getFileStreamPath(mCrime.getPhoto().getFilename());
+								in.delete();
+								Log.i(TAG, "Deleted file!");
+							} catch (Exception e) {
+								Log.i(TAG, "File not found or does not exist!");
+							}
+							break;
+
+						default:
+							break;
+						}
+						
+						return false;
+					}
+				});
+				
+				// return true to indicate no further click processing is to be done
+				// that is, the event ends with a long click
+				return true;
+			}
+		});
+		
 		mPhotoView.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -227,6 +293,17 @@ public class CrimeFragment extends Fragment {
 		
 		mDateButton.setText(mCrime.getDate().toString());
 	}
+	
+	
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		getActivity().getMenuInflater().inflate(R.menu.crime_list_item_context, menu);
+	}
+
+
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -244,6 +321,20 @@ public class CrimeFragment extends Fragment {
 			int orientation = data.getIntExtra(CrimeCameraFragment.EXTRA_PHOTO_ORIENTATION, 1);
 			if (filename != null) {
 				//Log.i(TAG, "filename: " + filename);
+				
+				// [Challenge Ch20 - 2 ]: Delete previous photo if there exists one
+				if ( mCrime.getPhoto() != null ) {
+					File in;
+					boolean deleteResult = false;
+					try {
+						in = getActivity().getFileStreamPath(mCrime.getPhoto().getFilename());
+						deleteResult = in.delete();
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					Log.i(TAG, "File deleted? " + deleteResult);
+				}
+				
 				
 				Photo p = new Photo(filename, orientation);
 				mCrime.setPhoto(p);
