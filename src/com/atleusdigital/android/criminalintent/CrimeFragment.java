@@ -248,6 +248,8 @@ public class CrimeFragment extends Fragment {
 							} catch (Exception e) {
 								Log.i(TAG, "File not found or does not exist!");
 							}
+							// Close context menu immediately after
+							mode.finish();
 							break;
 
 						default:

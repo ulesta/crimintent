@@ -41,8 +41,8 @@ public final class R {
         public static final int fragmentContainer=0x7f050001;
         public static final int fragment_crimelist_emptyText=0x7f05000e;
         public static final int fragment_crimelist_empty_button=0x7f05000f;
-        public static final int menu_item_delete_crime=0x7f050013;
-        public static final int menu_item_delete_photo=0x7f050014;
+        public static final int menu_item_delete_crime=0x7f050014;
+        public static final int menu_item_delete_photo=0x7f050013;
         public static final int menu_item_new_crime=0x7f050015;
         public static final int menu_item_show_subtitle=0x7f050016;
         public static final int textView1=0x7f050006;
