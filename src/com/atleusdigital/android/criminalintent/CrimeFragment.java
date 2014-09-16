@@ -245,6 +245,7 @@ public class CrimeFragment extends Fragment {
 								in = getActivity().getFileStreamPath(mCrime.getPhoto().getFilename());
 								in.delete();
 								Log.i(TAG, "Deleted file!");
+								mCrime.setPhoto(null);
 							} catch (Exception e) {
 								Log.i(TAG, "File not found or does not exist!");
 							}
@@ -335,6 +336,7 @@ public class CrimeFragment extends Fragment {
 						// TODO: handle exception
 					}
 					Log.i(TAG, "File deleted? " + deleteResult);
+					mCrime.setPhoto(null);
 				}
 				
 				
