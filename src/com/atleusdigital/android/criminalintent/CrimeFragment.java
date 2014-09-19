@@ -3,15 +3,20 @@ package com.atleusdigital.android.criminalintent;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
@@ -50,6 +55,7 @@ public class CrimeFragment extends Fragment {
 	
 	private static final int REQUEST_DATE = 0;
 	private static final int REQUEST_PHOTO = 1;
+	private static final int REQUEST_CONTACT = 2;
 	
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -57,6 +63,9 @@ public class CrimeFragment extends Fragment {
 	private CheckBox mSolvedCheckBox;
 	private ImageButton mPhotoButton;
 	private ImageView mPhotoView;
+	private Button mSuspectButton;
+	
+	private PackageManager pm;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -199,7 +208,7 @@ public class CrimeFragment extends Fragment {
 		});
 		
 		// If camera is not available, disable camera functionality
-		PackageManager pm = getActivity().getPackageManager();
+		pm = getActivity().getPackageManager();
 		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && !pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
 			mPhotoButton.setEnabled(false);
 		}
@@ -286,15 +295,29 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 		
-		Button chooseButton = (Button)v.findViewById(R.id.crime_choose);
-		chooseButton.setOnClickListener(new OnClickListener() {
+		
+		mSuspectButton = (Button)v.findViewById(R.id.crime_choose);
+		mSuspectButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				Intent i = new Intent(Intent.ACTION_PICK, 
+						ContactsContract.Contacts.CONTENT_URI);
+				// hi check to make sure we have app to handle implicit intent
+				List<ResolveInfo> activities = pm.queryIntentActivities(i, 0);
 				
+				if ( activities.size() > 0 ) {
+					startActivityForResult(i, REQUEST_CONTACT);
+				} else {
+					return;
+				}
 				
 			}
 		});
+		
+		if (mCrime.getSuspect() != null) {
+			mSuspectButton.setText(mCrime.getSuspect());
+		}
 		
 		Button reportButton = (Button)v.findViewById(R.id.crime_send);
 		reportButton.setOnClickListener(new OnClickListener() {
@@ -304,10 +327,12 @@ public class CrimeFragment extends Fragment {
 				// cool
 				//Intent i = new Intent(Intent.ACTION_VOICE_COMMAND);
 				Intent i = new Intent(Intent.ACTION_SEND);
-				i = Intent.createChooser(i, getString(R.string.send_report));
+				Log.i(TAG, i.toString());
+				
 				i.setType("text/plain");
 				i.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
 				i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
+				i = Intent.createChooser(i, getString(R.string.send_report));
 				startActivity(i);
 			}
 		});
@@ -372,6 +397,31 @@ public class CrimeFragment extends Fragment {
 				//Log.i(TAG, "Crime: " + mCrime.getTitle() + " has a photo");
 				showPhoto();
 			}
+		} else if (requestCode == REQUEST_CONTACT) {
+			Uri contactUri = data.getData();
+			
+			// Specify which fields we want our query to return values for
+			String[] queryFields = new String[] {
+					ContactsContract.Contacts.DISPLAY_NAME
+			};
+			// Perform query - the contactUri is like a "where" clause here
+			Cursor c = getActivity().getContentResolver()
+					.query(contactUri, queryFields, null, null, null);
+			
+			// Double-check results
+			if (c.getCount() == 0) {
+				c.close();
+				return;
+			}
+			
+			// Pull out first column of the first and only row of data (suspect's name)
+			c.moveToFirst();
+			String suspect = c.getString(0);
+			mCrime.setSuspect(suspect);
+			Log.i(TAG, "Suspect is: " + suspect);
+			mSuspectButton.setText(suspect);
+			c.close();
+			
 		}
 	}	
 	
