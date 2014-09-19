@@ -30,5 +30,6 @@
 	<string name="crime_report_no_suspect">There is no suspect.</string>
 	<string name="crime_report_suspect">The suspect is %s.</string>
 	<string name="crime_report_subject">CriminalIntent Crime Report</string>
-	<string name="send_report">Send crime report via</string>
+	<string name="send_report">Send crime report via e-mail</string>
+	<string name="search_web">Search for suspect via the Web</string>
 </resources>

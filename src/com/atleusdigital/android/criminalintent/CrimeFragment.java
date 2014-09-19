@@ -8,6 +8,11 @@ import java.util.UUID;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -64,6 +69,7 @@ public class CrimeFragment extends Fragment {
 	private ImageButton mPhotoButton;
 	private ImageView mPhotoView;
 	private Button mSuspectButton;
+	private Button mSearchButton;
 	
 	private PackageManager pm;
 
@@ -334,6 +340,32 @@ public class CrimeFragment extends Fragment {
 				i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
 				i = Intent.createChooser(i, getString(R.string.send_report));
 				startActivity(i);
+			}
+		});
+		
+		mSearchButton = (Button)v.findViewById(R.id.crime_search);
+		mSearchButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(Intent.ACTION_WEB_SEARCH);
+				String suspect = mCrime.getSuspect();
+				if (suspect == null) {
+					Builder err = new AlertDialog.Builder(getActivity());
+					err.setMessage("No suspect specified!");
+					err.setPositiveButton("Okay", new Dialog.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							return;
+						}
+					});
+					err.create();
+					err.show();
+				} else {
+					i.putExtra(SearchManager.QUERY, suspect);
+					startActivity(i);
+				}
 			}
 		});
 		
