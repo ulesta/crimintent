@@ -21,5 +21,7 @@
     <string name="empty_button">New Crime</string>
     
     <string name="take">Take!</string>
+    <string name="choose_suspect">Choose Suspect</string>
+    <string name="send_report">Send Crime Report</string>
 
 </resources>

@@ -13,6 +13,7 @@ public class Crime {
 	private static final String JSON_SOVLED = "solved";
 	private static final String JSON_DATE = "date";
 	private static final String JSON_PHOTO = "photo";
+	private static final String JSON_SUSPECT = "suspect";
 	
 	// random test for git
 	private UUID mId;
@@ -20,6 +21,7 @@ public class Crime {
 	private Date mDate;
 	private boolean mSolved;
 	private Photo mPhoto;
+	private String mSuspect;
 	
 	private final String daysOfWeek[] = {
 			
@@ -47,6 +49,10 @@ public class Crime {
 	public Date getDate() {
 		return mDate;
 	}
+	
+	public String getSuspect() {
+		return mSuspect;
+	}
 
 	public void setDate(Date date) {
 		mDate = date;
@@ -58,6 +64,10 @@ public class Crime {
 
 	public void setSolved(boolean solved) {
 		mSolved = solved;
+	}
+	
+	public void setSuspect(String suspect) {
+		mSuspect = suspect;
 	}
 
 	@Override
@@ -74,6 +84,9 @@ public class Crime {
 		if (mPhoto != null) {
 			json.put(JSON_PHOTO, mPhoto.toJSON());
 		}
+		if (mSuspect != null) {
+			json.put(JSON_SUSPECT, mSuspect);
+		}
 		return json;
 	}
 	
@@ -84,6 +97,9 @@ public class Crime {
 		mDate = new Date(json.getLong(JSON_DATE));
 		if (json.has(JSON_PHOTO)) {
 			mPhoto = new Photo(json.getJSONObject(JSON_PHOTO));
+		}
+		if (json.has(JSON_SUSPECT)) {
+			mSuspect = json.getString(JSON_SUSPECT);
 		}
 	}
 	
