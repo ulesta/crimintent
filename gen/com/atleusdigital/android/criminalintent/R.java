@@ -69,6 +69,12 @@ public final class R {
         public static final int app_name=0x7f060000;
         public static final int choose_suspect=0x7f060010;
         public static final int crime_details_label=0x7f060004;
+        public static final int crime_report=0x7f060012;
+        public static final int crime_report_no_suspect=0x7f060015;
+        public static final int crime_report_solved=0x7f060013;
+        public static final int crime_report_subject=0x7f060017;
+        public static final int crime_report_suspect=0x7f060016;
+        public static final int crime_report_unsolved=0x7f060014;
         public static final int crime_solved_label=0x7f060005;
         public static final int crime_title_hint=0x7f060002;
         public static final int crime_title_label=0x7f060003;
@@ -79,7 +85,8 @@ public final class R {
         public static final int empty_text=0x7f06000d;
         public static final int hide_subtitle=0x7f06000a;
         public static final int new_crime=0x7f060008;
-        public static final int send_report=0x7f060011;
+        public static final int send_crime_report=0x7f060011;
+        public static final int send_report=0x7f060018;
         public static final int show_subtitle=0x7f060009;
         public static final int subtitle=0x7f06000b;
         public static final int take=0x7f06000f;
