@@ -59,6 +59,7 @@ public final class R {
  alias 
  -sw600dp qualifier means "use this resource on any device whose smallest dim is 
     600dp or greater" 
+ -xlarge qualifier to be used on Android 3.2 or earlier 
  alias 
  -sw600dp qualifier means "use this resource on any device whose smallest dim is 
     600dp or greater" 
