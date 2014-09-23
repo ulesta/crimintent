@@ -59,9 +59,10 @@ public class CrimeListFragment extends ListFragment {
 		super.onDetach();
 		mCallbacks = null;
 	}
-
-
-
+	
+	public void updateUI() {
+		((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

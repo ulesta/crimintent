@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
-public class CrimePagerActivity extends FragmentActivity {
+public class CrimePagerActivity extends FragmentActivity implements CrimeFragment.Callbacks {
 	
 		private final static String TAG = "CrimePagerActivity";
 
@@ -79,6 +79,13 @@ public class CrimePagerActivity extends FragmentActivity {
 				Log.i(TAG, "for loop = " + i);
 			}
 			
+		}
+
+		@Override
+		public void onCrimeUpdated(Crime crime) {
+			// Nothing
+			// This is so the mobile version won't crash.
+			// This is because any activity hosting CrimeFragment must implement its Callbacks
 		}
 	
 }
