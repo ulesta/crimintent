@@ -8,12 +8,17 @@ import android.support.v4.app.FragmentActivity;
 public abstract class SingleFragmentActivity extends FragmentActivity {
 	
 	protected abstract Fragment createFragment();
+	
+	// now subclasses can choose to override this to return a diff layout
+	protected int getLayoutResId() {
+		return R.layout.activity_fragment;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_fragment);
+		setContentView(getLayoutResId());
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
 		

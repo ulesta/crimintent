@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- alias -->
+    <!-- -sw600dp qualifier means "use this resource on any device whose smallest dim is 
+    600dp or greater" -->
+    <item name="activity_masterdetail" type="layout">@layout/activity_twopane</item>
+    
+</resources>
